@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödev Cevap Anahtarı - Eğitim Platformu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subject-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .subject-btn {
+            padding: 20px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .math-btn {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+        }
+
+        .turkish-btn {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .science-btn {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .math-header { background: linear-gradient(45deg, #1e3c72, #2a5298); }
+        .turkish-header { background: linear-gradient(45deg, #ff6b35, #f7931e); }
+        .science-header { background: linear-gradient(45deg, #11998e, #38ef7d); }
+
+        .subject-title {
+            color: white;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .admin-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Answer List Styles */
+        .answer-list {
+            max-height: 70vh;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .answer-title {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #2d3748;
+            position: relative;
+        }
+
+        .answer-title:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-title:before {
+            content: "▶";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
+        }
+
+        .answer-title.expanded:before {
+            transform: translateY(-50%) rotate(90deg);
+        }
+
+        .answer-content {
+            display: none;
+            background: white;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            margin: -15px 0 15px 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Pagination Styles */
+        .pagination-container {
+            display: none;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .pagination-container.show {
+            display: block;
+        }
+
+        .question-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .question-counter {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .question-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            text-align: left;
+            line-height: 1.6;
+            font-size: 16px;
+            white-space: pre-line;
+        }
+
+        .no-answers {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .no-answers-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Admin Panel Styles */
+        .admin-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        .admin-header h3 {
+            color: #2d3748;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .add-section {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #e1f5fe;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-section h4 {
+            margin-bottom: 20px;
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-section h4:before {
+            content: "➕";
+            font-size: 1.2rem;
+        }
+
+        .admin-panel {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .account-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .account-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .account-info {
+            flex: 1;
+        }
+
+        .account-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .account-details {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .code-display {
+            background: #f1f3f4;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin: 3px 0;
+            display: inline-block;
+        }
+
+        .account-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .danger-btn {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: linear-gradient(45deg, #3182ce, #2b77cb);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        /* Notification animations */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Ödev Cevap Anahtarı</h1>
+        
+        <!-- Login Screen -->
+        <div id="loginScreen">
+            <div class="login-container">
+                <h3>Siteye Giriş</h3>
+                <p>Hesap adınızı girin:</p>
+                <input type="text" id="accountName" placeholder="Hesap Adı" class="code-input" />
+                <button class="submit-btn" onclick="checkAccount()">Giriş Yap</button>
+                <div id="loginError" class="error-message" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Home Screen -->
+        <div id="homeScreen" style="display: none;">
+            <div class="subject-buttons">
+                <button class="subject-btn math-btn" onclick="openSubject('matematik')">
+                    📊 Matematik
+                </button>
+                <button class="subject-btn turkish-btn" onclick="openSubject('turkce')">
+                    📝 Türkçe
+                </button>
+                <button class="subject-btn science-btn" onclick="openSubject('fen')">
+                    🔬 Fen Bilimleri
+                </button>
+            </div>
+        </div>
+
+        <!-- Subject Screen -->
+        <div id="subjectScreen" style="display: none;">
+            <div id="subjectHeader" class="subject-header">
+                <h2 id="subjectTitle" class="subject-title"></h2>
+                <button class="back-btn" onclick="goBack()">← Geri Dön</button>
+            </div>
+            
+            <div class="login-container">
+                <h3>Kodu Girin</h3>
+                <input type="password" id="subjectCode" placeholder="Erişim Kodu" class="code-input" />
+                <button class="submit-btn" onclick="checkSubjectCode()">Giriş</button>
+                <div id="codeError" class="error-message" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Answers Screen -->
+        <div id="answersScreen" style="display: none;">
+            <div id="answersHeader" class="subject-header">
+                <h2 id="answersTitle" class="subject-title"></h2>
+                <button class="back-btn" onclick="goBackToHome()">← Ana Sayfa</button>
+            </div>
+            
+            <div class="answer-list" id="answersContainer">
+                <!-- Cevaplar buraya yüklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Button -->
+    <button class="admin-btn" onclick="openAdminLogin()">👤 Yönetim</button>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAdminLogin()">&times;</span>
+            <h3>Yönetim Paneli Girişi</h3>
+            <input type="password" id="adminPassword" placeholder="Yönetici Kodu" class="code-input" />
+            <button class="submit-btn" onclick="checkAdminPassword()">Giriş</button>
+            <div id="adminError" class="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminPanelModal" class="modal">
+        <div class="modal-content" style="max-width: 950px; max-height: 95vh; overflow-y: auto;">
+            <span class="close" onclick="closeAdminPanel()">&times;</span>
+            
+            <div class="admin-header">
+                <h3>🔧 Yönetim Paneli</h3>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="admin-stats" id="adminStats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAccounts">0</div>
+                    <div class="stat-label">Toplam Hesap</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeAccounts">0</div>
+                    <div class="stat-label">Aktif Hesap</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAnswers">0</div>
+                    <div class="stat-label">Toplam Cevap</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="onlineUsers">0</div>
+                    <div class="stat-label">Çevrimiçi Kullanıcı</div>
+                </div>
+            </div>
+            
+            <!-- Hesap Yönetimi -->
+            <div class="add-section">
+                <h4>Yeni Hesap Ekle</h4>
+                <div style="display: flex; gap: 15px; align-items: end;">
+                    <div style="flex: 1;">
+                        <input type="text" id="newAccountName" placeholder="Hesap Adı (Ad Soyad)" class="code-input" />
+                    </div>
+                    <button class="submit-btn" onclick="addAccount()" style="width: auto; padding: 15px 25px;">Hesap Ekle</button>
+                </div>
+            </div>
+            
+            <div class="admin-panel" id="accountsList">
+                <!-- Hesaplar buraya yüklenecek -->
+            </div>
+
+            <!-- Cevap Yönetimi -->
+            <div class="add-section" style="margin-top: 30px;">
+                <h4>Cevap Anahtarı Ekle</h4>
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px; margin-bottom: 15px;">
+                    <select id="answerSubject" class="code-input">
+                        <option value="matematik">📊 Matematik</option>
+                        <option value="turkce">📝 Türkçe</option>
+                        <option value="fen">🔬 Fen Bilimleri</option>
+                    </select>
+                    <input type="text" id="answerTitle" placeholder="Ödev Başlığı (ör: 1. Ödev)" class="code-input" />
+                </div>
+                <textarea id="answerContent" placeholder="Cevap içeriği..." style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; resize: vertical; min-height: 100px; font-family: inherit; margin: 10px 0;"></textarea>
+                <button class="submit-btn" onclick="addAnswer()" style="margin-top: 15px;">Cevap Ekle</button>
+            </div>
+
+            <!-- Sistem Yönetimi -->
+            <div class="add-section" style="margin-top: 30px;">
+                <h4>Sistem Yönetimi</h4>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="submit-btn" onclick="exportData()" style="background: #28a745; color: white; width: auto; padding: 15px 25px;">
+                        📤 Veri Dışa Aktar
+                    </button>
+                    <button class="submit-btn" onclick="clearAllData()" style="background: #dc3545; color: white; width: auto; padding: 15px 25px;">
+                        🗑️ Tüm Verileri Temizle
+                    </button>
+                    <button class="submit-btn" onclick="refreshStats()" style="background: #17a2b8; color: white; width: auto; padding: 15px 25px;">
+                        🔄 İstatistikleri Yenile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced data management
+        let accounts = {};
+        let deviceCodes = {};
+        let answers = {
+            matematik: [],
+            turkce: [],
+            fen: []
+        };
+        
+        let currentUser = null;
+        let currentSubject = null;
+        let deviceId = generateDeviceId();
+        let userIP = getClientIP();
+
+        // Device ID generation
+        function generateDeviceId() {
+            return 'device_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        }
+
+        // IP control (simplified for demo)
+        function getClientIP() {
+            return 'ip_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Random code generation
+        function generateRandomCode() {
+            return Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+
+        // Initialize with test data
+        function initializeTestData() {
+            // Test account
+            accounts['Aymira Sönmez'] = {
+                name: 'Aymira Sönmez',
+                created: new Date(),
+                ip: null,
+                lastLogin: null,
+                active: true
+            };
+            
+            // Generate device codes for test account
+            ['matematik', 'turkce', 'fen'].forEach(subject => {
+                deviceCodes['Aymira Sönmez_' + subject] = generateRandomCode();
+            });
+        }
+
+        // Account check
+        function checkAccount() {
+            const accountName = document.getElementById('accountName').value.trim();
+            const errorDiv = document.getElementById('loginError');
+            
+            if (!accountName) {
+                showError('loginError', 'Lütfen hesap adınızı girin.');
+                return;
+            }
+            
+            if (!accounts[accountName]) {
+                showError('loginError', 'Bu hesap adı sistemde bulunamadı.');
+                return;
+            }
+            
+            const account = accounts[accountName];
+            const clientIP = getClientIP();
+            
+            // IP control
+            if (account.ip && account.ip !== clientIP) {
+                showError('loginError', 'Bu hesap başka bir cihazdan kullanılıyor.');
+                return;
+            }
+            
+            // Bind IP to account
+            account.ip = clientIP;
+            account.lastLogin = new Date();
+            currentUser = accountName;
+            
+            // Navigate to home screen
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('homeScreen').style.display = 'block';
+            errorDiv.style.display = 'none';
+        }
+
+        // Subject selection
+        function openSubject(subject) {
+            currentSubject = subject;
+            const subjectNames = {
+                matematik: '📊 Matematik',
+                turkce: '📝 Türkçe',
+                fen: '🔬 Fen Bilimleri'
+            };
+            
+            const headerClasses = {
+                matematik: 'math-header',
+                turkce: 'turkish-header',
+                fen: 'science-header'
+            };
+            
+            document.getElementById('subjectTitle').textContent = subjectNames[subject];
+            document.getElementById('subjectHeader').className = 'subject-header ' + headerClasses[subject];
+            document.getElementById('homeScreen').style.display = 'none';
+            document.getElementById('subjectScreen').style.display = 'block';
+            document.getElementById('subjectCode').value = '';
+            document.getElementById('codeError').style.display = 'none';
+        }
+
+        // Subject code check
+        function checkSubjectCode() {
+            const code = document.getElementById('subjectCode').value.trim();
+            const userDeviceCode = deviceCodes[currentUser + '_' + currentSubject];
+            
+            if (!userDeviceCode || userDeviceCode !== code) {
+                showError('codeError', 'Geçersiz kod. Lütfen doğru kodu girin.');
+                return;
+            }
+            
+            showAnswers();
+        }
+
+        // Show answers
+        function showAnswers() {
+            const subjectNames = {
+                matematik: '📊 Matematik Cevapları',
+                turkce: '📝 Türkçe Cevapları',
+                fen: '🔬 Fen Bilimleri Cevapları'
+            };
+            
+            const headerClasses = {
+                matematik: 'math-header',
+                turkce: 'turkish-header',
+                fen: 'science-header'
+            };
+            
+            document.getElementById('answersTitle').textContent = subjectNames[currentSubject];
+            document.getElementById('answersHeader').className = 'subject-header ' + headerClasses[currentSubject];
+            document.getElementById('subjectScreen').style.display = 'none';
+            document.getElementById('answersScreen').style.display = 'block';
+            
+            loadAnswers();
+        }
+
+        // Load answers with pagination
+        function loadAnswers() {
+            const container = document.getElementById('answersContainer');
+            const subjectAnswers = answers[currentSubject] || [];
+            
+            if (subjectAnswers.length === 0) {
+                container.innerHTML = `
+                    <div class="no-answers">
+                        <div class="no-answers-icon">📝</div>
+                        <p>Henüz cevap eklenmemiş.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            subjectAnswers.forEach((answer, index) => {
+                const answerDiv = document.createElement('div');
+                answerDiv.className = 'answer-item';
+                
+                // Parse questions from content
+                const questions = parseQuestions(answer.content);
+                
+                answerDiv.innerHTML = `
+                    <div class="answer-title" onclick="toggleAnswer(${index})">
+                        ${answer.title}
+                    </div>
+                    <div class="answer-content" id="answer-${index}">
+                        <div class="pagination-container" id="pagination-${index}">
+                            <div class="question-nav">
+                                <button class="nav-btn" onclick="previousQuestion(${index})" id="prev-${index}">← Önceki</button>
+                                <div class="question-counter">
+                                    <span id="question-info-${index}">1. Soru</span>
+                                </div>
+                                <button class="nav-btn" onclick="nextQuestion(${index})" id="next-${index}">Sonraki →</button>
+                            </div>
+                            <div class="question-content" id="question-content-${index}">
+                                ${questions.length > 0 ? questions[0] : 'Henüz soru eklenmemiş.'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Store questions data
+                answerDiv.questions = questions;
+                answerDiv.currentQuestion = 0;
+                
+                container.appendChild(answerDiv);
+            });
+        }
+
+        // Parse questions from content
+        function parseQuestions(content) {
+            if (!content) return [];
+            
+            // Split by question numbers (1., 2., 3., etc.)
+            const questionRegex = /(\d+\.\s*[^]*?)(?=\d+\.|$)/g;
+            const matches = content.match(questionRegex);
+            
+            if (matches && matches.length > 0) {
+                return matches.map(q => q.trim()).filter(q => q.length > 0);
+            }
+            
+            // If no numbered questions, treat entire content as one question
+            return [content];
+        }
+
+        // Toggle answer visibility
+        function toggleAnswer(index) {
+            const answerTitle = document.querySelectorAll('.answer-title')[index];
+            const answerContent = document.getElementById(`answer-${index}`);
+            
+            if (answerContent.classList.contains('show')) {
+                answerContent.classList.remove('show');
+                answerTitle.classList.remove('expanded');
+            } else {
+                // Close all other answers
+                document.querySelectorAll('.answer-content.show').forEach(content => {
+                    content.classList.remove('show');
+                });
+                document.querySelectorAll('.answer-title.expanded').forEach(title => {
+                    title.classList.remove('expanded');
+                });
+                
+                // Open current answer
+                answerContent.classList.add('show');
+                answerTitle.classList.add('expanded');
+            }
+        }
+
+        // Navigation functions for questions
+        function previousQuestion(answerIndex) {
+            const answerDiv = document.querySelectorAll('.answer-item')[answerIndex];
+            if (answerDiv.currentQuestion > 0) {
+                answerDiv.currentQuestion--;
+                updateQuestionDisplay(answerIndex);
+            }
+        }
+
+        function nextQuestion(answerIndex) {
+            const answerDiv = document.querySelectorAll('.answer-item')[answerIndex];
+            if (answerDiv.currentQuestion < answerDiv.questions.length - 1) {
+                answerDiv.currentQuestion++;
+                updateQuestionDisplay(answerIndex);
+            }
+        }
+
+        function updateQuestionDisplay(answerIndex) {
+            const answerDiv = document.querySelectorAll('.answer-item')[answerIndex];
+            const currentQ = answerDiv.currentQuestion;
+            const totalQ = answerDiv.questions.length;
+            
+            // Update question info
+            document.getElementById(`question-info-${answerIndex}`).textContent = `${currentQ + 1}. Soru`;
+            
+            // Update question content
+            document.getElementById(`question-content-${answerIndex}`).textContent = answerDiv.questions[currentQ];
+            
+            // Update navigation buttons
+            document.getElementById(`prev-${answerIndex}`).disabled = currentQ === 0;
+            document.getElementById(`next-${answerIndex}`).disabled = currentQ === totalQ - 1;
+        }
+
+        // Navigation functions
+        function goBack() {
+            document.getElementById('subjectScreen').style.display = 'none';
+            document.getElementById('homeScreen').style.display = 'block';
+        }
+        
+        function goBackToHome() {
+            document.getElementById('answersScreen').style.display = 'none';
+            document.getElementById('homeScreen').style.display = 'block';
+        }
+
+        // Error display
+        function showError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Admin panel functions
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'block';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminError').style.display = 'none';
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === '567234') {
+                closeAdminLogin();
+                openAdminPanel();
+            } else {
+                showError('adminError', 'Yanlış yönetici kodu!');
+            }
+        }
+
+        function openAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'block';
+            loadAccountsList();
+            updateAdminStats();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'none';
+        }
+
+        // Account management
+        function addAccount() {
+            const accountName = document.getElementById('newAccountName').value.trim();
+            if (!accountName) {
+                alert('Lütfen hesap adı girin.');
+                return;
+            }
+            
+            if (accounts[accountName]) {
+                alert('Bu hesap adı zaten mevcut.');
+                return;
+            }
+            
+            accounts[accountName] = {
+                name: accountName,
+                created: new Date(),
+                ip: null,
+                lastLogin: null,
+                active: true
+            };
+            
+            // Generate device codes for each subject
+            ['matematik', 'turkce', 'fen'].forEach(subject => {
+                deviceCodes[accountName + '_' + subject] = generateRandomCode();
+            });
+            
+            document.getElementById('newAccountName').value = '';
+            loadAccountsList();
+            showSuccessMessage('Hesap başarıyla eklendi!');
+        }
+
+        function loadAccountsList() {
+            const container = document.getElementById('accountsList');
+            container.innerHTML = '<h4>📋 Kayıtlı Hesaplar</h4>';
+            
+            const accountKeys = Object.keys(accounts);
+            
+            if (accountKeys.length === 0) {
+                container.innerHTML += '<div style="text-align: center; padding: 40px; color: #6c757d;"><p>Henüz hesap eklenmemiş.</p></div>';
+                return;
+            }
+            
+            accountKeys.forEach(accountName => {
+                const account = accounts[accountName];
+                
+                const accountDiv = document.createElement('div');
+                accountDiv.className = 'account-item';
+                
+                // Add inactive styling if account is not active
+                if (!account.active) {
+                    accountDiv.style.opacity = '0.6';
+                    accountDiv.style.borderColor = '#dc3545';
+                }
+                
+                const matematikCode = deviceCodes[accountName + '_matematik'];
+                const turkceCode = deviceCodes[accountName + '_turkce'];
+                const fenCode = deviceCodes[accountName + '_fen'];
+                
+                const statusColor = account.ip ? '#28a745' : '#6c757d';
+                const statusText = account.ip ? 'Çevrimiçi' : 'Çevrimdışı';
+                const accountStatus = account.active ? 'Aktif' : 'Pasif';
+                const accountStatusColor = account.active ? '#28a745' : '#dc3545';
+                
+                accountDiv.innerHTML = `
+                    <div class="account-info">
+                        <div class="account-name">${account.name}</div>
+                        <div class="account-details">
+                            <div style="margin-bottom: 8px;">
+                                <span style="color: #1e3c72;">📊 Matematik:</span> 
+                                <span class="code-display">${matematikCode}</span>
+                            </div>
+                            <div style="margin-bottom: 8px;">
+                                <span style="color: #ff6b35;">📝 Türkçe:</span> 
+                                <span class="code-display">${turkceCode}</span>
+                            </div>
+                            <div style="margin-bottom: 8px;">
+                                <span style="color: #11998e;">🔬 Fen:</span> 
+                                <span class="code-display">${fenCode}</span>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <span style="color: ${statusColor};">●</span> 
+                                <strong>Bağlantı:</strong> ${statusText}
+                                <br>
+                                <span style="color: ${accountStatusColor};">●</span> 
+                                <strong>Hesap:</strong> ${accountStatus}
+                                ${account.ip ? `<br><small>IP: ${account.ip}</small>` : ''}
+                                ${account.lastLogin ? `<br><small>Son Giriş: ${new Date(account.lastLogin).toLocaleString('tr-TR')}</small>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="account-controls">
+                        <button class="edit-btn" onclick="editAccountCodes('${accountName}')" title="Kodları Yenile">
+                            🔄 Kod Değiştir
+                        </button>
+                        <button class="danger-btn" onclick="${account.active ? 'deactivateAccount' : 'activateAccount'}('${accountName}')" title="${account.active ? 'Hesabı Kapat' : 'Hesabı Aktif Et'}">
+                            ${account.active ? '🗑️ Hesabı Kapat' : '✅ Hesabı Aktif Et'}
+                        </button>
+                    </div>
+                `;
+                container.appendChild(accountDiv);
+            });
+            
+            // Update statistics
+            updateAdminStats();
+        }
+
+        function editAccountCodes(accountName) {
+            if (confirm(`${accountName} hesabının tüm kodlarını yenilemek istiyor musunuz?`)) {
+                ['matematik', 'turkce', 'fen'].forEach(subject => {
+                    deviceCodes[accountName + '_' + subject] = generateRandomCode();
+                });
+                loadAccountsList();
+                showSuccessMessage('Kodlar başarıyla yenilendi!');
+            }
+        }
+
+        function deactivateAccount(accountName) {
+            if (confirm(`${accountName} hesabını kapatmak istiyor musunuz?`)) {
+                accounts[accountName].active = false;
+                accounts[accountName].ip = ''; // Clear IP when deactivated
+                loadAccountsList();
+                showSuccessMessage('Hesap kapatıldı.');
+            }
+        }
+
+        function activateAccount(accountName) {
+            if (confirm(`${accountName} hesabını aktif etmek istiyor musunuz?`)) {
+                accounts[accountName].active = true;
+                loadAccountsList();
+                showSuccessMessage('Hesap aktif edildi.');
+            }
+        }
+
+        // Answer management
+        function addAnswer() {
+            const subject = document.getElementById('answerSubject').value;
+            const title = document.getElementById('answerTitle').value.trim();
+            const content = document.getElementById('answerContent').value.trim();
+            
+            if (!title || !content) {
+                alert('Lütfen başlık ve içerik girin.');
+                return;
+            }
+            
+            answers[subject].push({
+                title: title,
+                content: content,
+                created: new Date()
+            });
+            
+            document.getElementById('answerTitle').value = '';
+            document.getElementById('answerContent').value = '';
+            
+            // Show success message
+            showSuccessMessage('Cevap başarıyla eklendi!');
+            updateAdminStats();
+        }
+
+        // New admin functions
+        function updateAdminStats() {
+            const totalAccounts = Object.keys(accounts).length;
+            const activeAccounts = Object.keys(accounts).filter(name => accounts[name].active).length;
+            const onlineUsers = Object.keys(accounts).filter(name => accounts[name].ip).length;
+            const totalAnswers = answers.matematik.length + answers.turkce.length + answers.fen.length;
+            
+            document.getElementById('totalAccounts').textContent = totalAccounts;
+            document.getElementById('activeAccounts').textContent = activeAccounts;
+            document.getElementById('onlineUsers').textContent = onlineUsers;
+            document.getElementById('totalAnswers').textContent = totalAnswers;
+        }
+
+        function exportData() {
+            const data = {
+                accounts: accounts,
+                deviceCodes: deviceCodes,
+                answers: answers,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `admin_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showSuccessMessage('Veriler başarıyla dışa aktarıldı!');
+        }
+
+        function clearAllData() {
+            if (confirm('TÜM VERİLERİ SİLMEK İSTEDİĞİNİZDEN EMİN MİSİNİZ?\n\nBu işlem geri alınamaz!')) {
+                if (confirm('Son kez onaylıyor musunuz? Tüm hesaplar ve cevaplar silinecek!')) {
+                    accounts = {};
+                    deviceCodes = {};
+                    answers = {
+                        matematik: [],
+                        turkce: [],
+                        fen: []
+                    };
+                    
+                    loadAccountsList();
+                    showSuccessMessage('Tüm veriler temizlendi!');
+                }
+            }
+        }
+
+        function refreshStats() {
+            updateAdminStats();
+            showSuccessMessage('İstatistikler yenilendi!');
+        }
+
+        function showSuccessMessage(message) {
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Modal click outside to close
+        window.onclick = function(event) {
+            const adminLoginModal = document.getElementById('adminLoginModal');
+            const adminPanelModal = document.getElementById('adminPanelModal');
+            
+            if (event.target === adminLoginModal) {
+                closeAdminLogin();
+            }
+            if (event.target === adminPanelModal) {
+                closeAdminPanel();
+            }
+        }
+
+        // Enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement.id === 'accountName') {
+                    checkAccount();
+                } else if (activeElement.id === 'subjectCode') {
+                    checkSubjectCode();
+                } else if (activeElement.id === 'adminPassword') {
+                    checkAdminPassword();
+                }
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTestData();
+            console.log('System initialized');
+        });
+    </script>
+</body>
+</html>
